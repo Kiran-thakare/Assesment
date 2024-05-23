@@ -1,0 +1,83 @@
+ Write SQL query to solve the problem given below
+
+Consider three table named as city, customer and country
+
+mysql> select * from city;
++----+-------------+-----------+-------------+------------+
+| id | city_name   | lat       | longi       | country_id |
++----+-------------+-----------+-------------+------------+
+|  1 | Berlin      | 52.520008 |   13.404954 |          1 |
+|  2 | Belgrade    | 44.787197 |   20.457273 |          2 |
+|  3 | Zagreb      | 45.815399 |   15.966568 |          3 |
+|  4 | New York    |  40.73061 |  -73.935242 |          4 |
+|  5 | Los Angeles | 34.052235 | -118.243683 |          4 |
+|  6 | Warsaw      | 52.237049 |   21.017532 |          5 |
++----+-------------+-----------+-------------+------------+
+
+mysql> select * from customer_table;
++----+---------------+---------+---------------------+----------------+---------------------+
+| id | customer_name | city_id | customer_address    | next_call_date | ts_inserted         |
++----+---------------+---------+---------------------+----------------+---------------------+
+|  1 | Jewelry store |       4 | long Street 120     | 2020-01-21     | 2020-01-09 14:01:20 |
+|  2 | Bakery        |       1 | Kurfurstendamn 25   | 2020-02-21     | 2020-01-09 17:52:15 |
+|  3 | Cafe          |       1 | Tauentzienstrabe 44 | 2020-01-21     | 2020-01-10 08:02:49 |
+|  4 | Restaurant    |       3 | Ulica lipa 15       | 2020-01-21     | 2020-01-10 09:20:21 |
++----+---------------+---------+---------------------+----------------+---------------------+
+
+mysql> select * from country;
++----+-------------------------+-------------------------+--------------+
+| id | country_name            | country_name_eng        | country_code |
++----+-------------------------+-------------------------+--------------+
+|  1 | Deutschland             | Germany                 | DEU          |
+|  2 | Serbija                 | Serbia                  | SRB          |
+|  3 | Hrvatska                | Croatia                 | HRV          |
+|  4 | United State Of America | United State Of America | USA          |
+|  5 | Polska                  | Poland                  | POL          |
+|  6 | Espana                  | Spain                   | ESP          |
+|  7 | Rossiya                 | Russia                  | RUS          |
++----+-------------------------+-------------------------+--------------+
+
+Task : 1 (join multiple tables using left join)
+List all Countries and customers related to these countries.
+For each country displaying its name in English, the name of the city customer is located in as
+well as the name of the customer.
+Return even countries without related cities and customers.
+
+mysql> select country.id,country.country_name,city.city_name,customer_table.customer_name
+    -> from country
+    -> left join city
+    -> on country.id=city.country_id
+    -> left join customer_table
+    ->  on city.id=customer_table.city_id;
++----+-------------------------+-------------+---------------+
+| id | country_name            | city_name   | customer_name |
++----+-------------------------+-------------+---------------+
+|  1 | Deutschland             | Berlin      | Cafe          |
+|  1 | Deutschland             | Berlin      | Bakery        |
+|  2 | Serbija                 | Belgrade    | NULL          |
+|  3 | Hrvatska                | Zagreb      | Restaurant    |
+|  4 | United State Of America | New York    | Jewelry store |
+|  4 | United State Of America | Los Angeles | NULL          |
+|  5 | Polska                  | Warsaw      | NULL          |
+|  6 | Espana                  | NULL        | NULL          |
+|  7 | Rossiya                 | NULL        | NULL          |
++----+-------------------------+-------------+---------------+
+
+Task : 2 (join multiple tables using both left and inner join)
+Return the list of all countries that have pairs(exclude countries which are not referenced by any
+city). For such pairs return all customers.
+Return even pairs of not having a single customer
+
+mysql> select country.id,country.country_name,city.city_name,customer_table.customer_name from country
+inner join city  on country.id=city.country_id left join customer_table  on city.id=customer_table.city_id;
++----+-------------------------+-------------+---------------+
+| id | country_name            | city_name   | customer_name |
++----+-------------------------+-------------+---------------+
+|  1 | Deutschland             | Berlin      | Cafe          |
+|  1 | Deutschland             | Berlin      | Bakery        |
+|  2 | Serbija                 | Belgrade    | NULL          |
+|  3 | Hrvatska                | Zagreb      | Restaurant    |
+|  4 | United State Of America | New York    | Jewelry store |
+|  4 | United State Of America | Los Angeles | NULL          |
+|  5 | Polska                  | Warsaw      | NULL          |
++----+-------------------------+-------------+---------------+
